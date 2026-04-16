@@ -883,6 +883,20 @@ document.addEventListener('paste',e=>{const f=e.clipboardData.files[0];if(f&&f.t
  
 function loadFile(file){
   if(!file||!file.type.startsWith('image/'))return;
+
+  // reset كامل قبل تحميل الصورة الجديدة
+  outDataUrl=null;
+  origImg=null;
+  document.getElementById('outSec').style.display='none';
+  document.getElementById('progWrap').style.display='none';
+  document.getElementById('cmpWrap').style.display='none';
+  document.getElementById('cmpOrig').src='';
+  document.getElementById('cmpNew').src='';
+  document.getElementById('outImg').src='';
+  document.getElementById('cmpAfter').style.clipPath='';
+  document.getElementById('cmpLine').style.left='50%';
+  setProgress(0,'');
+
   const r=new FileReader();
   r.onload=ev=>{
     const img=new Image();
