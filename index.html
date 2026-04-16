@@ -842,20 +842,39 @@ function initCompare(){
   const wrap=document.getElementById('cmpWrap');
   const after=document.getElementById('cmpAfter');
   const line=document.getElementById('cmpLine');
+
+  // clone عشان نشيل كل الـ listeners القديمة
+  const newWrap=wrap.cloneNode(true);
+  wrap.parentNode.replaceChild(newWrap,wrap);
+
+  const newAfter=newWrap.querySelector('#cmpAfter');
+  const newLine=newWrap.querySelector('#cmpLine');
+
   let pos=50,drag=false;
+
   function set(p){
     pos=Math.max(2,Math.min(98,p));
     const pct=pos.toFixed(1);
-    after.style.clipPath=`inset(0 0 0 ${pct}%)`;
-    line.style.left=pct+'%';line.style.right='auto';
+    newAfter.style.clipPath=`inset(0 0 0 ${pct}%)`;
+    newLine.style.left=pct+'%';
+    newLine.style.right='auto';
   }
   set(50);
-  wrap.addEventListener('mousedown',e=>{drag=true;e.preventDefault()});
+
+  newWrap.addEventListener('mousedown',e=>{drag=true;e.preventDefault();});
   window.addEventListener('mouseup',()=>drag=false);
-  window.addEventListener('mousemove',e=>{if(!drag)return;const r=wrap.getBoundingClientRect();set((e.clientX-r.left)/r.width*100);});
-  wrap.addEventListener('touchstart',()=>drag=true,{passive:true});
+  window.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    const r=newWrap.getBoundingClientRect();
+    set((e.clientX-r.left)/r.width*100);
+  });
+  newWrap.addEventListener('touchstart',()=>drag=true,{passive:true});
   window.addEventListener('touchend',()=>drag=false);
-  window.addEventListener('touchmove',e=>{if(!drag)return;const r=wrap.getBoundingClientRect();set((e.touches[0].clientX-r.left)/r.width*100);});
+  window.addEventListener('touchmove',e=>{
+    if(!drag)return;
+    const r=newWrap.getBoundingClientRect();
+    set((e.touches[0].clientX-r.left)/r.width*100);
+  });
 }
  
 // ═══════════════════════════════════════════════
