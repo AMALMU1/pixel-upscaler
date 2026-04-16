@@ -617,15 +617,10 @@ async function processAI(img, targetScale){
       await tick();
     }
   }
-  const flipped=new Uint8ClampedArray(outW4*outH4*4);
-  for(let y=0;y<outH4;y++){
-    const srcRow=(outH4-1-y)*outW4*4;
-    flipped.set(outPixels.subarray(srcRow, srcRow+outW4*4), y*outW4*4);
-  }
   const c2d=document.getElementById('c2d');
   c2d.width=outW4; c2d.height=outH4;
   const ctx=c2d.getContext('2d');
-  ctx.putImageData(new ImageData(flipped, outW4, outH4), 0, 0);
+  ctx.putImageData(new ImageData(outPixels, outW4, outH4), 0, 0);
   if(targetScale!==4){
     const finalW=sw*targetScale, finalH=sh*targetScale;
     const finalCanvas=document.createElement('canvas');
