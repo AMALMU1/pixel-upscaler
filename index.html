@@ -843,38 +843,38 @@ function initCompare(){
   const after=document.getElementById('cmpAfter');
   const line=document.getElementById('cmpLine');
 
-  // clone عشان نشيل كل الـ listeners القديمة
-  const newWrap=wrap.cloneNode(true);
-  wrap.parentNode.replaceChild(newWrap,wrap);
-
-  const newAfter=newWrap.querySelector('#cmpAfter');
-  const newLine=newWrap.querySelector('#cmpLine');
-
-  let pos=50,drag=false;
+  let pos=50, drag=false;
 
   function set(p){
     pos=Math.max(2,Math.min(98,p));
     const pct=pos.toFixed(1);
-    newAfter.style.clipPath=`inset(0 0 0 ${pct}%)`;
-    newLine.style.left=pct+'%';
-    newLine.style.right='auto';
+    after.style.clipPath=`inset(0 0 0 ${pct}%)`;
+    line.style.left=pct+'%';
+    line.style.right='auto';
   }
   set(50);
 
-  newWrap.addEventListener('mousedown',e=>{drag=true;e.preventDefault();});
-  window.addEventListener('mouseup',()=>drag=false);
-  window.addEventListener('mousemove',e=>{
-    if(!drag)return;
-    const r=newWrap.getBoundingClientRect();
-    set((e.clientX-r.left)/r.width*100);
-  });
-  newWrap.addEventListener('touchstart',()=>drag=true,{passive:true});
-  window.addEventListener('touchend',()=>drag=false);
-  window.addEventListener('touchmove',e=>{
-    if(!drag)return;
-    const r=newWrap.getBoundingClientRect();
-    set((e.touches[0].clientX-r.left)/r.width*100);
-  });
+  // نشيل الـ listeners القديمة عن طريق flag
+  if(wrap._dragHandler) wrap.removeEventListener('mousedown', wrap._dragHandler);
+  if(wrap._touchHandler) wrap.removeEventListener('touchstart', wrap._touchHandler);
+  if(window._moveHandler) window.removeEventListener('mousemove', window._moveHandler);
+  if(window._touchMoveHandler) window.removeEventListener('touchmove', window._touchMoveHandler);
+  if(window._upHandler) window.removeEventListener('mouseup', window._upHandler);
+  if(window._touchEndHandler) window.removeEventListener('touchend', window._touchEndHandler);
+
+  wrap._dragHandler = e=>{drag=true; e.preventDefault();};
+  wrap._touchHandler = ()=>drag=true;
+  window._moveHandler = e=>{if(!drag)return; const r=wrap.getBoundingClientRect(); set((e.clientX-r.left)/r.width*100);};
+  window._touchMoveHandler = e=>{if(!drag)return; const r=wrap.getBoundingClientRect(); set((e.touches[0].clientX-r.left)/r.width*100);};
+  window._upHandler = ()=>drag=false;
+  window._touchEndHandler = ()=>drag=false;
+
+  wrap.addEventListener('mousedown', wrap._dragHandler);
+  wrap.addEventListener('touchstart', wrap._touchHandler, {passive:true});
+  window.addEventListener('mousemove', window._moveHandler);
+  window.addEventListener('touchmove', window._touchMoveHandler, {passive:true});
+  window.addEventListener('mouseup', window._upHandler);
+  window.addEventListener('touchend', window._touchEndHandler);
 }
  
 // ═══════════════════════════════════════════════
