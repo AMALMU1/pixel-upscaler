@@ -904,14 +904,15 @@ function loadFile(file){
   if(!file||!file.type.startsWith('image/'))return;
 
   // reset كامل قبل تحميل الصورة الجديدة
+  const origSrc=origImg.src;
   outDataUrl=null;
   origImg=null;
   document.getElementById('outSec').style.display='none';
   document.getElementById('progWrap').style.display='none';
   document.getElementById('cmpWrap').style.display='none';
-  document.getElementById('cmpOrig').src='';
-  document.getElementById('cmpNew').src='';
-  document.getElementById('outImg').src='';
+  document.getElementById('outImg').src=outDataUrl;
+  document.getElementById('cmpOrig').src=origSrc;
+  document.getElementById('cmpNew').src=outDataUrl;
   document.getElementById('cmpAfter').style.clipPath='inset(0 0 0 50%)';
   document.getElementById('cmpLine').style.left='50%';
   setProgress(0,'');
