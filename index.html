@@ -902,31 +902,37 @@ document.getElementById('fileIn').addEventListener('change',e=>loadFile(e.target
 document.addEventListener('paste',e=>{const f=e.clipboardData.files[0];if(f&&f.type.startsWith('image/'))loadFile(f)});
  
 function loadFile(file){
-  if(!file||!file.type.startsWith('image/'))return;
+  if(!file || !file.type.startsWith('image/')) return;
+
   // reset كامل قبل تحميل الصورة الجديدة
-  outDataUrl=null;
-  origImg=null;
-  document.getElementById('outSec').style.display='none';
-  document.getElementById('progWrap').style.display='none';
-  document.getElementById('cmpWrap').style.display='none';
-  document.getElementById('cmpOrig').src='';
-  document.getElementById('cmpNew').src='';
-  document.getElementById('outImg').src='';
-  document.getElementById('cmpAfter').style.clipPath='inset(0 0 0 50%)';
-  document.getElementById('cmpLine').style.left='50%';
-  setProgress(0,'');
-  const r=new FileReader();
-  r.onload=ev=>{
-    const img=new Image();
-    img.onload=()=>{
-      origImg=img;
-      document.getElementById('procBtn').disabled=false;
-      document.getElementById('origImg2').src=ev.target.result;
-      origImg.src=ev.target.result;
-      drop.querySelector('h3').textContent=`✅ ${file.name}`;
-      drop.querySelector('p').textContent=`${img.width} × ${img.height} بكسل`;
+  outDataUrl = null;
+  origImg = null;
+
+  document.getElementById('outSec').style.display = 'none';
+  document.getElementById('progWrap').style.display = 'none';
+  document.getElementById('cmpWrap').style.display = 'none';
+
+  document.getElementById('cmpOrig').src = '';
+  document.getElementById('cmpNew').src = '';
+  document.getElementById('outImg').src = '';
+  document.getElementById('origImg2').src = ''; // هذا كان ناقص
+
+  document.getElementById('cmpAfter').style.clipPath = 'inset(0 0 0 50%)';
+  document.getElementById('cmpLine').style.left = '50%';
+
+  setProgress(0, '');
+
+  const r = new FileReader();
+  r.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      origImg = img;
+      document.getElementById('procBtn').disabled = false;
+      document.getElementById('origImg2').src = ev.target.result;
+      drop.querySelector('h3').textContent = `✅ ${file.name}`;
+      drop.querySelector('p').textContent = `${img.width} × ${img.height} بكسل`;
     };
-    img.src=ev.target.result;
+    img.src = ev.target.result;
   };
   r.readAsDataURL(file);
 }
